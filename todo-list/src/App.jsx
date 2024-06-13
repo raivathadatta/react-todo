@@ -7,17 +7,17 @@ import UlComponent from './ul_component'
 function App() {
 
   let left = {
-    'js': 'unchecked',
-    'html': 'unchecked',
-    'css': 'unchecked',
-    'vite': 'unchecked'
+    'js': false,
+    'html': false,
+    'css': false,
+    'vite': false,
   }
 
   let right = {
-    'react': 'unchecked',
-    'java': 'unchecked',
-    'rust': 'unchecked',
-    'nextjs': 'unchecked'
+    'react': false,
+    'java': false,
+    'rust': false,
+    'nextjs': false
   }
 
 
@@ -25,12 +25,13 @@ function App() {
   let [rightObject, setRightObjects] = useState(right)
 
   function changeStatusOfRightObject(e) {
-    rightObject[e.target.value] = e.target.checked ? 'checked' : 'unchecked'
+    rightObject[e.target.value] = e.target.checked 
     setRightObjects(rightObject)
   }
 
   function changeLeftObject(e) {
-    leftObject[e.target.value] = e.target.checked ? 'checked' : 'unchecked'
+    leftObject[e.target.value] = e.target.checked 
+    console.log(leftObject[e.target.value])
     setLeftObjects(leftObject)
   }
 
@@ -38,7 +39,7 @@ function App() {
   function moveToRight() {
     let newObject = {}
     Object.keys(leftObject).map((keys) => {
-      newObject[keys] = 'unchecked'
+      newObject[keys] = false
     })
     setLeftObjects({})
     setRightObjects({ ...rightObject, ...newObject })
@@ -53,9 +54,9 @@ function App() {
     Object.keys(rightObject).forEach((key) => {
       console.log(key)
       if (rightObject[key] == 'checked') {
-        newObject[key] = 'unchecked';
+        newObject[key] = false;
       }else{
-        newRightObject[key] = 'unchecked';
+        newRightObject[key] = false;
       }
       console.log(leftObject, rightObject);
     })
@@ -67,7 +68,7 @@ function App() {
   function moveToLeft() {
     let newObject = {}
     Object.keys(rightObject).map((keys) => {
-      newObject[keys] = 'unchecked'
+      newObject[keys] = false
     })
     setLeftObjects({ ...leftObject, ...newObject })
     setRightObjects({})
@@ -79,11 +80,11 @@ function App() {
     let newLeftObject={}
     console.log(leftObject)
     Object.keys(leftObject).forEach((key) => {
-      console.log(key)
-      if (leftObject[key] == 'checked') {
-        newObject[key] = 'unchecked';
+      console.log(leftObject[key])
+      if (leftObject[key]) {
+        newObject[key] = false;
       }else{
-        newLeftObject[key] = 'unchecked';
+        newLeftObject[key] = false;
       }
       console.log(leftObject, rightObject);
     })
