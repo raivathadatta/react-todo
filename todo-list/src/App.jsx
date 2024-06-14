@@ -1,38 +1,47 @@
 import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
+
 import './App.css'
 import UlComponent from './ul_component'
 
+let left = {
+  'js': false,
+  'html': false,
+  'css': false,
+  'vite': false,
+}
+
+let right = {
+  'react': false,
+  'java': false,
+  'rust': false,
+  'nextjs': false
+}
 function App() {
 
-  let left = {
-    'js': false,
-    'html': false,
-    'css': false,
-    'vite': false,
-  }
 
-  let right = {
-    'react': false,
-    'java': false,
-    'rust': false,
-    'nextjs': false
-  }
+  let lefInitialObject = JSON.parse(JSON.stringify(left))
+  let rightInitialObject = JSON.parse(JSON.stringify(right))
 
+  let [leftObject, setLeftObjects] = useState(lefInitialObject)
+  let [rightObject, setRightObjects] = useState(rightInitialObject)
 
-  let [leftObject, setLeftObjects] = useState(left)
-  let [rightObject, setRightObjects] = useState(right)
+  // let isDisableMoveAllEleentsToRight= Object.keys(rightObject).length !=0
 
   function changeStatusOfRightObject(e) {
-    rightObject[e.target.value] = e.target.checked 
-    setRightObjects(rightObject)
+
+    const newobject = {...rightObject}
+    newobject[e.target.value] = e.target.checked
+    // console.log(rightObject[e.target.value], 'right')
+
+    setRightObjects(newobject)
   }
 
-  function changeLeftObject(e) {
-    leftObject[e.target.value] = e.target.checked 
-    console.log(leftObject[e.target.value])
-    setLeftObjects(leftObject)
+  function changeStatusOfLeftObject(e) {
+    const newobject = {...leftObject}
+    newobject[e.target.value] = e.target.checked
+    // console.log(rightObject[e.target.value], 'right')
+
+    setLeftObjects(newobject)
   }
 
 
@@ -41,29 +50,13 @@ function App() {
     Object.keys(leftObject).map((keys) => {
       newObject[keys] = false
     })
+
     setLeftObjects({})
     setRightObjects({ ...rightObject, ...newObject })
 
   }
 
 
-  function moveOnlySelectedToLeft() {
-    let newObject = {}
-    let newRightObject={}
-    console.log(rightObject)
-    Object.keys(rightObject).forEach((key) => {
-      console.log(key)
-      if (rightObject[key] == 'checked') {
-        newObject[key] = false;
-      }else{
-        newRightObject[key] = false;
-      }
-      console.log(leftObject, rightObject);
-    })
-   
-    setRightObjects(newRightObject)
-    setLeftObjects({...leftObject,...newObject})
-  }
 
   function moveToLeft() {
     let newObject = {}
@@ -74,45 +67,84 @@ function App() {
     setRightObjects({})
   }
 
+
+
+
+  function moveOnlySelectedToLeft() {
+    let newObject = {}
+    let newRightObject = {}
+    console.log(rightObject)
+    Object.keys(rightObject).forEach((key) => {
+      console.log(key)
+      if (rightObject[key]) {
+        newObject[key] = false;
+      } else {
+        newRightObject[key] = false;
+      }
+      console.log(leftObject, rightObject);
+    })
+
+    setRightObjects(newRightObject)
+    console.log(leftObject, rightObject, 'moveonlyselectedtoleft');
+    setLeftObjects({ ...leftObject, ...newObject })
+  }
+
+
   function moveOnlySelectedTORight() {
 
     let newObject = {}
-    let newLeftObject={}
+    let newLeftObject = {}
     console.log(leftObject)
     Object.keys(leftObject).forEach((key) => {
       console.log(leftObject[key])
       if (leftObject[key]) {
         newObject[key] = false;
-      }else{
+      } else {
         newLeftObject[key] = false;
       }
       console.log(leftObject, rightObject);
+
     })
-   
-    setRightObjects({...rightObject,...newObject})
+    console.log(leftObject, rightObject, 'moveonlyselectedtoright');
+
+    setRightObjects({ ...rightObject, ...newObject })
     setLeftObjects(newLeftObject)
 
   }
+
+  // let disableMoveToRight = () => Object.values(leftObject).some((event) => event)
+  // let disableMoveToLeft = () => Object.values(rightObject).some((event) => {
+  //   console.log(event)
+  //   return event
+  // })
+
+  function stateChange(obj){
+    const result = Object.keys(obj).some((item) => obj[item] === true)
+    return result
+  }
+
+
+  //console.log(leftObject, rightObject, Object.values(leftObject).some((value) => value), Object.keys(rightObject).length == 0);
   return (
     <>
       <div className="w-[40%] h-[300px] border-2 border-black flex  justify-start" id="left_component"  >
 
-    <UlComponent list = {leftObject} cb={changeLeftObject} ></UlComponent>
+        <UlComponent list={leftObject} cb={changeStatusOfLeftObject} ></UlComponent>
 
 
       </div>
-      <div className="w-[20%] h-[300px]  border-2 border-black flex flex-col " id="middle_component">
+      <div className="w-[20%] h-[300px]  border-2 border-black flex flex-col p-5" id="middle_component">
 
-        <button onClick={moveToRight} className=' border-2 border-b-black h-[25%]'>{">>"} </button>
-        <button className='border-2 border-b-black h-[25%]' onClick={moveOnlySelectedTORight}>{">"}</button>
-        <button className='border-2 border-b-black  h-[25%]'  onClick={moveOnlySelectedToLeft}>{"<"}</button>
-        <button className='border-2  h-[25%]' onClick={moveToLeft}>{"<<"}</button>
+        <button onClick={moveToRight} className=' border-2 border-black h-[25%] mb-2 disabled:bg-gray-500' disabled={Object.keys(leftObject).length == 0} >{">>"} </button>
+        <button className='border-2 border-black h-[25%] mb-2 disabled:bg-gray-500' onClick={moveOnlySelectedTORight} disabled={!stateChange(leftObject)} >{">"}</button>
+        <button className='border-2 border-black  h-[25%] mb-2  disabled:bg-gray-500' onClick={moveOnlySelectedToLeft} disabled={!stateChange(rightObject)}>{"<"}</button>
+        <button className='border-2  border-black h-[25%]  disabled:bg-gray-500' onClick={moveToLeft} disabled={Object.keys(rightObject).length == 0} >{"<<"}</button>
       </div>
 
       <div className="w-[40%]  h-[300px] border-2 border-black" id="right_component">
 
-        <UlComponent list = {rightObject} cb={changeStatusOfRightObject}></UlComponent>
-       
+        <UlComponent list={rightObject} cb={changeStatusOfRightObject}></UlComponent>
+
       </div>
     </>
   )
